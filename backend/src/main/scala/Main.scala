@@ -11,8 +11,8 @@ case class SolveRequestData(table: Vector[Vector[Int]], algorithm: String)
 case class SolveResponseData(solution: Option[SudokuTable])
 
 given [A](using encoder: JsonEncoder[A]): JsonEncoder[Option[A]] =
-  (b: Option[A], indent: Option[Int], out: Write) => {
-    b match {
+  (opt: Option[A], indent: Option[Int], out: Write) => {
+    opt match {
       case Some(value) => encoder.unsafeEncode(value, indent, out)
       case None => out.write("null")
     }

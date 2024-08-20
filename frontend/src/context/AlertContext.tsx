@@ -6,5 +6,6 @@ type AlertData = {
     isOpen: boolean;
 };
 type AlertContextData = [AlertData, (t: string, m: string) => void, () => void];
-const AlertContext = createContext<AlertContextData>([null, () => null, () => null])
-export default AlertContext
+
+const AlertContext = createContext<AlertContextData>([null, () => null, () => null]);
+export default AlertContext;

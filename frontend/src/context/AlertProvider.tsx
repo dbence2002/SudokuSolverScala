@@ -11,8 +11,8 @@ function AlertProvider({ children }) {
         setAlertData({title, message, isOpen: true});
     }
     const close = () => setAlertData(data => {
-        return {...data, isOpen: false}
-    })
+        return {...data, isOpen: false};
+    });
     return (
         <AlertContext.Provider value={[alertData, alert, close]}>
             {children}

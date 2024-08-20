@@ -5,8 +5,8 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import Dropdown from "./Dropdown";
 import AlertContext from "../context/AlertContext";
 
-const initTable: number[][] = Array.from(Array(9), _ => Array(9).fill(0))
-const algorithms: string[] = ["Backtracking", "Evolutionary"]
+const initTable: number[][] = Array.from(Array(9), _ => Array(9).fill(0));
+const algorithms: string[] = ["Backtracking", "Evolutionary"];
 
 const SudokuSolver = () => {
     const fetchSolution = async (): Promise<number[][] | null> => {
@@ -55,7 +55,7 @@ const SudokuSolver = () => {
     const [solution, setSolution] = useState(initTable);
     const [isLoading, setIsLoading] = useState(false);
     const [chosen, setChosen] = useState(0);
-    const [alertData, alert] = useContext(AlertContext)
+    const [alertData, alert] = useContext(AlertContext);
 
     useEffect(() => {
         if (alertData.isOpen) document.body.style.overflow = 'hidden';

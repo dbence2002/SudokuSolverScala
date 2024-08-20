@@ -1,0 +1,7 @@
+{
+  "esModuleInterop":true,
+  "compilerOptions": {
+    "jsx": "react",
+    "allowSyntheticDefaultImports": true
+  }
+}

@@ -37,7 +37,6 @@ object Main extends ZIOAppDefault {
     )
   private val routes =
     Routes(
-      Method.GET / Root -> handler(Response.text("Greetings at your service")),
       Method.POST / "solve" -> handler { (req: Request) =>
         (for {
           parsed <- req.body.asString.map(_.fromJson[SolveRequestData])

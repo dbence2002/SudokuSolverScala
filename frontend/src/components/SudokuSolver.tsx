@@ -21,7 +21,7 @@ const SudokuSolver = () => {
         return json.solution?.table;
     }
     const solve = async () => {
-        setIsDisabled(true);
+        setDisabled(true);
         setIsLoading(true);
         try {
             const solution = await fetchSolution();
@@ -29,29 +29,28 @@ const SudokuSolver = () => {
             if (solution) {
                 setSolution(solution);
             } else {
-                setIsDisabled(false);
+                setDisabled(false);
                 alert("No solution", "No solution found :(");
             }
         } catch (e) {
             alert("Error", "The fetching was unsuccessful");
             console.error(e);
-        } finally {
-            setIsDisabled(false);
+            setDisabled(false);
             setIsLoading(false);
         }
     }
     const clearTable = () => {
         setTable(initTable);
         setSolution(initTable);
-        setIsDisabled(false);
+        setDisabled(false);
     }
     const resetSolution = () => {
         setSolution(initTable);
-        setIsDisabled(false);
+        setDisabled(false);
     }
 
     const [table, setTable] = useState(initTable);
-    const [isDisabled, setIsDisabled] = useState(false);
+    const [disabled, setDisabled] = useState(false);
     const [solution, setSolution] = useState(initTable);
     const [isLoading, setIsLoading] = useState(false);
     const [chosen, setChosen] = useState(0);
@@ -67,9 +66,9 @@ const SudokuSolver = () => {
             <div className="w-full flex flex-col items-center">
                 <div className="w-full sm:w-[30rem] lg:w-[40rem]">
                     <Dropdown items={algorithms} chosen={chosen} setChosen={i => setChosen(i)} />
-                    <SudokuTable table={table} setTable={setTable} solution={solution} disabled={isDisabled} />
+                    <SudokuTable table={table} setTable={setTable} solution={solution} disabled={disabled} />
                     <div className="flex justify-center space-x-[5px] sm:space-x-1.5 mt-1 sm:mt-1.5">
-                        <button disabled={false} className="bg-indigo-700 disabled:text-indigo-400 relative enabled:hover:bg-indigo-600 px-6 py-3 font-medium rounded w-full enabled:active:bg-indigo-500 transition duration-200" onClick={solve}>
+                        <button disabled={disabled} className="bg-indigo-700 disabled:text-indigo-400 relative enabled:hover:bg-indigo-600 px-6 py-3 font-medium rounded w-full enabled:active:bg-indigo-500 transition duration-200" onClick={solve}>
                             <span className={`${!isLoading? "opacity-100 ease-in": "opacity-0 ease-out"} absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transition duration-200 space-x-2.5 flex items-center`}>
                                 <FontAwesomeIcon icon={["fas", "play"]} className="w-4 h-4" />
                                 <span>Solve</span>

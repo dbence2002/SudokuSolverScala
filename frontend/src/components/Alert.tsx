@@ -49,11 +49,11 @@ const Alert = ({
                             <Dialog.Title className="rounded-t-lg bg-gray-700 px-6 py-3 font-medium">
                                 {title}
                             </Dialog.Title>
-                            <div className="items-start px-6 py-3 bg-gray-800">
+                            <div className="items-start px-6 py-3 bg-gray-800 text-sm">
                                 {message}
                             </div>
                             <div className="px-6 border-t border-gray-700 bg-gray-800 rounded-b-lg py-3">
-                                <button className="py-2.5 px-5 bg-indigo-600 rounded-lg hover:bg-indigo-700 active:bg-indigo-800" onClick={onClose}>
+                                <button className="py-2 px-4 bg-indigo-600 rounded-lg hover:bg-indigo-700 active:bg-indigo-800 text-sm font-medium" onClick={onClose}>
                                     Close
                                 </button>
                             </div>

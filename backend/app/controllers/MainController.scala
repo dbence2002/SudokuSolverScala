@@ -21,7 +21,7 @@ class MainController @Inject()(ws: WSClient, cc: ControllerComponents)(implicit 
     "backtracking" -> BacktrackSolver,
     "evolutionary" -> EvolutionSolver
   )
-  private val difficulties = Set("easy", "medium", "hard", "expert", "master", "extreme")
+  private val difficulties = Set("easy", "medium", "hard", "expert", "evil", "extreme")
 
   def solve(): Action[AnyContent] = Action { implicit request: Request[AnyContent] =>
     request.body.asJson.map(x => Json.fromJson[SolveRequestData](x)) match {

@@ -8,7 +8,7 @@ import ButtonChooser from "./ButtonChooser";
 
 const initTable: number[][] = Array.from(Array(9), _ => Array(9).fill(0));
 const algorithms: string[] = ["Backtracking", "Evolutionary"];
-const levels: string[] = ["easy", "medium", "hard", "expert", "master", "extreme"];
+const levels: string[] = ["easy", "medium", "hard", "expert", "evil", "extreme"];
 
 const SudokuSolver = () => {
     const fetchSolution = async (): Promise<number[][] | null> => {

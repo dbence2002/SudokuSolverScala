@@ -12,6 +12,11 @@ html, body {
   font-family: 'Roboto', sans-serif;
 }
 
+#root {
+  @apply overflow-x-hidden;
+  @apply fixed inset-0;
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;

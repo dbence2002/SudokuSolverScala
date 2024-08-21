@@ -1,5 +1,4 @@
 import React, {useContext} from 'react';
-import './App.css';
 import SudokuSolver from "./components/SudokuSolver";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import { library } from '@fortawesome/fontawesome-svg-core'

@@ -25,7 +25,7 @@ class MainController @Inject()(ws: WSClient, cc: ControllerComponents)(implicit 
 
   def solve(): Action[AnyContent] = Action { implicit request: Request[AnyContent] =>
     request.body.asJson.map(x => Json.fromJson[SolveRequestData](x)) match {
-      case Some(JsSuccess(SolveRequestData(algo, table), _)) && solvers.contains(algo) =>
+      case Some(JsSuccess(SolveRequestData(algo, table), _)) if solvers.contains(algo) =>
         solvers(algo).solve(table) match {
           case None => Ok(Json.toJson(Map[String, String]("solution" -> null)))
           case Some(v) => Ok(Json.toJson(Map("solution" -> v.table)))

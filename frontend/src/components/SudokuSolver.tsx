@@ -102,10 +102,10 @@ const SudokuSolver = () => {
             <div className="w-full flex flex-col items-center">
                 <div className="w-full sm:w-[35rem]">
                     <Dropdown items={algorithms} chosen={chosenDropdown} setChosen={i => setChosenDropdown(i)} />
-                    <button disabled={loading.size !== 0} className="relative h-12 mt-2.5 mb-1.5 bg-teal-700 disabled:text-teal-400 enabled:hover:bg-teal-600 px-6 py-3 font-medium rounded w-full enabled:active:bg-teal-500 transition duration-200" onClick={importProblem}>
+                    <button disabled={loading.size !== 0} className="relative h-12 mt-2.5 mb-1.5 bg-teal-700 disabled:text-teal-400 enabled:hover:bg-teal-600 font-medium rounded w-full enabled:active:bg-teal-500 transition duration-200" onClick={importProblem}>
                         <span className={`${!loading.has("import")? "opacity-100 ease-in": "opacity-0 ease-out"} absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transition duration-200 space-x-2.5 flex items-center`}>
                             <FontAwesomeIcon icon={["fas", "arrow-down"]} className="w-4 h-4" />
-                            <span>Import from sudoku.com</span>
+                            <span className="whitespace-nowrap">Import from sudoku.com</span>
                         </span>
                         <span className={`${loading.has("import")? "opacity-100 ease-in": "opacity-0 ease-out"} absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transition duration-200`}>
                             <svg aria-hidden="true" className="w-5 h-5 text-teal-500 animate-spin fill-white" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">

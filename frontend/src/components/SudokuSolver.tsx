@@ -4,9 +4,11 @@ import SudokuTable from "./SudokuTable";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import Dropdown from "./Dropdown";
 import AlertContext from "../context/AlertContext";
+import ButtonChooser from "./ButtonChooser";
 
 const initTable: number[][] = Array.from(Array(9), _ => Array(9).fill(0));
 const algorithms: string[] = ["Backtracking", "Evolutionary"];
+const levels: string[] = ["easy", "medium", "hard", "expert", "master", "extreme"];
 
 const SudokuSolver = () => {
     const fetchSolution = async (): Promise<number[][] | null> => {
@@ -14,11 +16,14 @@ const SudokuSolver = () => {
             method: "POST",
             body: JSON.stringify({
                 table: table,
-                algorithm: algorithms[chosen].toLowerCase()
-            })
+                algorithm: algorithms[chosenDropdown].toLowerCase()
+            }),
+            headers: {
+                "Content-type": "application/json; charset=utf-8"
+            }
         })
         const json = await resp.json();
-        return json.solution?.table;
+        return json.solution;
     }
     const solve = async () => {
         setDisabled(true);
@@ -33,10 +38,28 @@ const SudokuSolver = () => {
                 alert("No solution", "No solution found :(");
             }
         } catch (e) {
-            alert("Error", "The fetching was unsuccessful");
+            alert("Error", "Request failed");
             console.error(e);
             setDisabled(false);
             setIsLoading(false);
+        }
+    }
+    const importProblem = async () => {
+        try {
+            const resp = await fetch(`${process.env.REACT_APP_BACKEND_URL}/import/${levels[chosenButton]}`)
+            const json = await resp.json();
+            const tableStr: string = json.mission;
+            const newTable: number[][] = [];
+            for (let i = 0; i < 9; ++i) {
+                const rowStr = tableStr.slice(i * 9, i * 9 + 9);
+                newTable[i] = rowStr.split('').map(x => parseInt(x));
+                console.log(newTable[i]);
+            }
+            setSolution(initTable);
+            setTable(newTable);
+            setDisabled(false)
+        } catch (e) {
+            alert("Error", "Request failed")
         }
     }
     const clearTable = () => {
@@ -53,7 +76,8 @@ const SudokuSolver = () => {
     const [disabled, setDisabled] = useState(false);
     const [solution, setSolution] = useState(initTable);
     const [isLoading, setIsLoading] = useState(false);
-    const [chosen, setChosen] = useState(0);
+    const [chosenDropdown, setChosenDropdown] = useState(0);
+    const [chosenButton, setChosenButton] = useState(0);
     const [alertData, alert] = useContext(AlertContext);
 
     useEffect(() => {
@@ -64,10 +88,15 @@ const SudokuSolver = () => {
     return (
         <>
             <div className="w-full flex flex-col items-center">
-                <div className="w-full sm:w-[30rem] lg:w-[40rem]">
-                    <Dropdown items={algorithms} chosen={chosen} setChosen={i => setChosen(i)} />
+                <div className="w-full sm:w-[35rem]">
+                    <Dropdown items={algorithms} chosen={chosenDropdown} setChosen={i => setChosenDropdown(i)} />
+                    <button disabled={isLoading} className="mt-2.5 mb-1.5 bg-teal-700 disabled:text-teal-400 enabled:hover:bg-teal-600 px-6 py-3 font-medium rounded w-full enabled:active:bg-teal-500 transition duration-200 space-x-2.5" onClick={importProblem}>
+                        <FontAwesomeIcon icon={["fas", "arrow-down"]} className="w-4 h-4" />
+                        <span>Import from sudoku.com</span>
+                    </button>
+                    <ButtonChooser items={levels} chosen={chosenButton} setChosen={i => setChosenButton(i)} />
                     <SudokuTable table={table} setTable={setTable} solution={solution} disabled={disabled} />
-                    <div className="flex justify-center space-x-[5px] sm:space-x-1.5 mt-1 sm:mt-1.5">
+                    <div className="flex justify-center space-x-[5px] sm:space-x-1.5 mt-1.5">
                         <button disabled={disabled} className="bg-indigo-700 disabled:text-indigo-400 relative enabled:hover:bg-indigo-600 px-6 py-3 font-medium rounded w-full enabled:active:bg-indigo-500 transition duration-200" onClick={solve}>
                             <span className={`${!isLoading? "opacity-100 ease-in": "opacity-0 ease-out"} absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transition duration-200 space-x-2.5 flex items-center`}>
                                 <FontAwesomeIcon icon={["fas", "play"]} className="w-4 h-4" />

@@ -3,7 +3,6 @@ package sudoku
 import sudoku.conversion.given
 
 val PopulationSize = 18
-val MutateCount = 18
 val ActionTournamentCount = 5
 val MutateTournamentCount = 2
 val MaxGenerationCount = 25000
@@ -126,7 +125,7 @@ object EvolutionSolver extends SudokuSolver[EvolutionState] {
     }
     val r = scala.util.Random(st.seed)
     val sorted = st.pop.sortBy(_.fitness).reverse
-    val mutated = Range(0, MutateCount).map(_ => {
+    val mutated = Range(0, PopulationSize).map(_ => {
       val index = Range(0, MutateTournamentCount).map(_ => r.between(0, st.pop.length)).min
       sorted(index).mutate(r.nextInt)
     }).toVector

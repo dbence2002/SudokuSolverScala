@@ -1,0 +1,2 @@
+POST        /solve                  controllers.MainController.solve()
+GET         /import/:level          controllers.MainController.importProblem(level)

@@ -16,7 +16,7 @@ const Dropdown = ({
             <Menu>
                 {({ open }) => (
                     <>
-                        <MenuButton className={`px-4 py-2 flex justify-between items-center bg-gray-950 rounded-md border border-gray-700 w-full mb-1 hover:bg-gray-900 active:bg-gray-800 text-left ${open? "ring-2 ring-indigo-600": ""}`} as="button">
+                        <MenuButton className={`px-4 py-2 flex justify-between items-center bg-gray-950 rounded-md border border-gray-700 w-full mb hover:bg-gray-900 active:bg-gray-800 text-left ${open? "ring-2 ring-indigo-600": ""}`} as="button">
                             {items[chosen]}
                             <FontAwesomeIcon icon={["fas", "chevron-down"]} className={`w-3.5 h-3.5 ${open? "rotate-180": "rotate-0"} transition duration-150`} />
                         </MenuButton>

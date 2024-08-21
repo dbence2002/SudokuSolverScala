@@ -15,8 +15,8 @@ function App() {
     return (
         <>
             <Alert title={alertData.title} message={alertData.message} isOpen={alertData.isOpen} onClose={closeAlert} />
-            <div className="flex flex-col items-center pt-1.5 sm:pt-10 px-1.5">
-                <h1 className="text-3xl lg:text-4xl font-semibold my-4 space-x-4">
+            <div className="flex flex-col items-center pt-1.5 sm:pt-6 px-1.5">
+                <h1 className="text-3xl sm:text-4xl font-semibold my-4 space-x-4">
                     <span>Sudoku solver</span>
                     <a href="https://github.com/dbence2002/SudokuSolverScala" target="_blank">
                         <FontAwesomeIcon icon={["fab", "github"]} />

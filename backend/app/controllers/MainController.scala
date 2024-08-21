@@ -5,18 +5,30 @@ import sudoku.conversion.given
 
 import javax.inject.*
 import play.api.*
-import play.api.libs.json.{JsSuccess, Json, Reads}
+import play.api.libs.functional.syntax.toFunctionalBuilderOps
+import play.api.libs.json.Reads.minLength
+import play.api.libs.json.{JsPath, JsSuccess, Json, Reads}
 import play.api.libs.ws.WSClient
 import play.api.mvc.*
 
 import scala.concurrent.{ExecutionContext, Future}
+import scala.language.postfixOps
 import scala.util.Try
 
-case class SolveRequestData(algorithm: String, table: Vector[Vector[Int]])
+trait ValidatedRequestData {
+  def isValid: Boolean
+}
+case class SolveRequestData(algorithm: String, table: Vector[Vector[Int]]) extends ValidatedRequestData {
+  override def isValid: Boolean = false
+}
 
 @Singleton
 class MainController @Inject()(ws: WSClient, cc: ControllerComponents)(implicit ec: ExecutionContext) extends AbstractController(cc) {
-  implicit val decoder: Reads[SolveRequestData] = Json.reads[SolveRequestData]
+  implicit val solveRequestReads: Reads[SolveRequestData] = (
+    (JsPath \ "algorithm").read[String].filter(x => solvers.contains(x)) and
+      (JsPath \ "table").read[Vector[Vector[Int]]].filter(t => t.length == 9 && t.forall(_.length == 9))
+  ) (SolveRequestData.apply)
+
   private val solvers = Map(
     "backtracking" -> BacktrackSolver,
     "evolutionary" -> EvolutionSolver
@@ -24,7 +36,7 @@ class MainController @Inject()(ws: WSClient, cc: ControllerComponents)(implicit 
   private val difficulties = Set("easy", "medium", "hard", "expert", "evil", "extreme")
 
   def solve(): Action[AnyContent] = Action { implicit request: Request[AnyContent] =>
-    request.body.asJson.map(x => Json.fromJson[SolveRequestData](x)) match {
+    request.body.asJson.map(x => x.validate[SolveRequestData]) match {
       case Some(JsSuccess(SolveRequestData(algo, table), _)) if solvers.contains(algo) =>
         solvers(algo).solve(table) match {
           case None => Ok(Json.toJson(Map[String, String]("solution" -> null)))

@@ -7,7 +7,7 @@ import AlertContext from "../context/AlertContext";
 import ButtonChooser from "./ButtonChooser";
 
 const initTable: number[][] = Array.from(Array(9), _ => Array(9).fill(0));
-const algorithms: string[] = ["Backtracking", "Evolutionary"];
+const algorithms: string[] = ["Backtracking", "Evolutionary", "Tabu search"];
 const levels: string[] = ["easy", "medium", "hard", "expert", "evil", "extreme"];
 
 const SudokuSolver = () => {
@@ -25,7 +25,7 @@ const SudokuSolver = () => {
             method: "POST",
             body: JSON.stringify({
                 table: table,
-                algorithm: algorithms[chosenDropdown].toLowerCase()
+                algorithm: algorithms[chosenDropdown].replace(" ", "_").toLowerCase()
             }),
             headers: {
                 "Content-type": "application/json; charset=utf-8"

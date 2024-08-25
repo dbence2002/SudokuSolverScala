@@ -81,8 +81,13 @@ const SudokuTable = ({
                             ${i !== 0 && i % 3 === 0? "border-t-4 sm:border-t-[5px]": ""}
                             ${j !== 0 && j % 3 === 0? "border-l-4 sm:border-l-[5px]": ""}`}>
                         <SudokuCell disabled={disabled} num={table[i][j] !== 0? num: solution[i][j]} onClick={() => {
+                            setSelected(([x, y]) => {
+                                if (x === i && y === j) {
+                                    advance(i, j);
+                                }
+                                return [i, j];
+                            });
                             setSelected([i, j]);
-                            advance(i, j)
                         }} locked={table[i][j] !== 0}/>
                         <div className={`absolute inset-0 bg-lime-200 ${i === selected[0] && solution[0][0] === 0? "opacity-15": "opacity-0"} transition duration-100 ease-out pointer-events-none`} />
                         <div className={`absolute inset-0 bg-lime-200 ${j === selected[1] && solution[0][0] === 0? "opacity-15": "opacity-0"} transition duration-100 ease-out pointer-events-none`} />

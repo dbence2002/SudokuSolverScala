@@ -1,12 +1,11 @@
 package controllers
 
-import sudoku.{BacktrackSolver, EvolutionSolver, SudokuTable}
+import sudoku.{BacktrackSolver, EvolutionAugmenter, EvolutionSolver, SudokuTable, TabuSearchAugmenter, TabuSearchSolver}
 import sudoku.conversion.given
 
 import javax.inject.*
 import play.api.*
 import play.api.libs.functional.syntax.toFunctionalBuilderOps
-import play.api.libs.json.Reads.minLength
 import play.api.libs.json.{JsPath, JsSuccess, Json, Reads}
 import play.api.libs.ws.WSClient
 import play.api.mvc.*
@@ -15,12 +14,7 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.language.postfixOps
 import scala.util.Try
 
-trait ValidatedRequestData {
-  def isValid: Boolean
-}
-case class SolveRequestData(algorithm: String, table: Vector[Vector[Int]]) extends ValidatedRequestData {
-  override def isValid: Boolean = false
-}
+case class SolveRequestData(algorithm: String, table: Vector[Vector[Int]])
 
 @Singleton
 class MainController @Inject()(ws: WSClient, cc: ControllerComponents)(implicit ec: ExecutionContext) extends AbstractController(cc) {
@@ -31,7 +25,8 @@ class MainController @Inject()(ws: WSClient, cc: ControllerComponents)(implicit 
 
   private val solvers = Map(
     "backtracking" -> BacktrackSolver,
-    "evolutionary" -> EvolutionSolver
+    "evolutionary" -> (EvolutionSolver + EvolutionAugmenter),
+    "tabu_search" -> (TabuSearchAugmenter + TabuSearchSolver)
   )
   private val difficulties = Set("easy", "medium", "hard", "expert", "evil", "extreme")
 

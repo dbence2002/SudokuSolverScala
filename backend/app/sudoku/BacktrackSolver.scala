@@ -55,8 +55,8 @@ object BacktrackSolver extends SudokuSolver[BacktrackState] {
     case Nil => Some(st)
     case h :: t =>
       val (x, y) = h
-      val banned = st.availableNums(x, y)
-      if (banned.isEmpty || st.direction == Direction.Backward) {
+      val free = st.availableNums(x, y)
+      if (free.isEmpty || st.direction == Direction.Backward) {
         if (st.used.isEmpty) {
           return None
         }
@@ -65,7 +65,7 @@ object BacktrackSolver extends SudokuSolver[BacktrackState] {
           case Some(v) => Some(st.changeHead(v))
         }
       } else {
-        Some(st.append(banned.min))
+        Some(st.append(free.min))
       }
   }
 }

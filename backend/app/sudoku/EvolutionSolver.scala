@@ -107,12 +107,8 @@ private[sudoku] case class EvolutionPartial(override val table: Vector[Vector[Ce
       case Right(v) => (v._2, 1)
     })
     best match {
-      case Left((x, y)) =>
-        val newTable = table.updated(x, table(x).updated(y, Cell(0, false)))
-        EvolutionPartial(newTable)
-      case Right((x, y, z)) =>
-        val newTable = table.updated(x, table(x).updated(y, Cell(z, false)))
-        EvolutionPartial(newTable)
+      case Left((x, y)) => EvolutionPartial(table.updated(x, table(x).updated(y, Cell(0, false))))
+      case Right((x, y, z)) => EvolutionPartial(table.updated(x, table(x).updated(y, Cell(z, false))))
     }
   }
 }

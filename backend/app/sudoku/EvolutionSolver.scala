@@ -5,8 +5,8 @@ import scala.collection.mutable.Set as MSet
 import scala.collection.mutable.Map as MMap
 
 val PopulationSize = 12
-val ActionTournamentCount = 4
-val CrossoverTournamentCount = 2
+val ActionTournamentCount = 5
+val CrossoverTournamentCount = 1
 val MaxGenerationCount = 2500
 
 private[sudoku] case class Cell(value: Int, locked: Boolean)
@@ -156,7 +156,6 @@ private case class EvolutionState(pop: Vector[EvolutionPartial], seed: Int, gen:
 
 object EvolutionSolver extends SudokuSolver[EvolutionState] {
   override def apply(st: EvolutionState): Option[EvolutionState] = {
-    println(st.gen + " " + st.best.fitness)
     if (st.isSolved) {
       return Some(st)
     }
@@ -168,7 +167,7 @@ object EvolutionSolver extends SudokuSolver[EvolutionState] {
     val offsprings = Range(0, PopulationSize).map(_ => {
       val s1 = sorted(Range(0, CrossoverTournamentCount).map(_ => r.between(0, st.pop.length)).min)
       val s2 = sorted(Range(0, CrossoverTournamentCount).map(_ => r.between(0, st.pop.length)).min)
-      s1.crossover(s2, r.nextInt).mutate(r.nextInt).mutate(r.nextInt)
+      s1.crossover(s2, r.nextInt).mutate(r.nextInt).mutate(r.nextInt).mutate(r.nextInt)
     }).toVector
     Some(EvolutionState(offsprings, r.nextInt, st.gen + 1))
   }

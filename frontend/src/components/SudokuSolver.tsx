@@ -35,21 +35,21 @@ const SudokuSolver = () => {
         return json.solution;
     }
     const solve = async () => {
-        setIsSolved(true);
+        setDisabled(true);
         setLoading(s => added(s, "solve"));
         try {
             const solution = await fetchSolution();
-            setLoading(s => {s.delete("solve"); return s;});
+            setLoading(s => deleted(s, "solve"));
             if (solution) {
                 setSolution(solution);
             } else {
-                setIsSolved(false);
+                setDisabled(false);
                 alert("No solution", "No solution found :(");
             }
         } catch (e) {
             alert("Error", "Request failed");
             console.error(e);
-            setIsSolved(false);
+            setDisabled(false);
             setLoading(s => deleted(s, "solve"));
         }
     }
@@ -67,7 +67,7 @@ const SudokuSolver = () => {
             }
             setSolution(initTable);
             setTable(newTable);
-            setIsSolved(false);
+            setDisabled(false);
         } catch (e) {
             alert("Error", "Request failed");
         } finally {
@@ -77,15 +77,15 @@ const SudokuSolver = () => {
     const clearTable = () => {
         setTable(initTable);
         setSolution(initTable);
-        setIsSolved(false);
+        setDisabled(false);
     }
     const resetSolution = () => {
         setSolution(initTable);
-        setIsSolved(false);
+        setDisabled(false);
     }
 
     const [table, setTable] = useState(initTable);
-    const [isSolved, setIsSolved] = useState(false);
+    const [disabled, setDisabled] = useState(false);
     const [solution, setSolution] = useState(initTable);
     const [loading, setLoading] = useState(new Set<string>());
     const [chosenDropdown, setChosenDropdown] = useState(0);
@@ -115,9 +115,9 @@ const SudokuSolver = () => {
                         </span>
                     </button>
                     <ButtonChooser items={levels} chosen={chosenButton} setChosen={i => setChosenButton(i)} />
-                    <SudokuTable table={table} setTable={setTable} solution={solution} disabled={isSolved} />
+                    <SudokuTable table={table} setTable={setTable} solution={solution} disabled={disabled} />
                     <div className="flex justify-center space-x-[5px] sm:space-x-1.5 mt-1.5">
-                        <button disabled={isSolved || loading.size !== 0} className="bg-indigo-700 disabled:text-indigo-400 relative enabled:hover:bg-indigo-600 px-6 py-3 font-medium rounded w-full enabled:active:bg-indigo-500 transition duration-200" onClick={solve}>
+                        <button disabled={loading.size !== 0 || disabled} className="bg-indigo-700 disabled:text-indigo-400 relative enabled:hover:bg-indigo-600 px-6 py-3 font-medium rounded w-full enabled:active:bg-indigo-500" onClick={solve}>
                             <span className={`${!loading.has("solve")? "opacity-100 ease-in": "opacity-0 ease-out"} absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transition duration-200 space-x-2.5 flex items-center`}>
                                 <FontAwesomeIcon icon={["fas", "play"]} className="w-4 h-4" />
                                 <span>Solve</span>

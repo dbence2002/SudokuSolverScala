@@ -31,15 +31,15 @@ private case class BacktrackState(
   }
   def append(v: Int): BacktrackState = {
     val (x, y) = free.head
-    copy(table = table.updated(x, table(x).updated(y, v)), used = (x, y) :: used, free = free.tail, direction = Direction.Forward)
+    copy(table = table.updated2d(x, y, v), used = (x, y) :: used, free = free.tail, direction = Direction.Forward)
   }
   def undo: BacktrackState = {
     val (x, y) = used.head
-    copy(table = table.updated(x, table(x).updated(y, 0)), used = used.tail, free = (x, y) :: free, direction = Direction.Backward)
+    copy(table = table.updated2d(x, y, 0), used = used.tail, free = (x, y) :: free, direction = Direction.Backward)
   }
   def changeHead(v: Int): BacktrackState = {
     val (x, y) = used.head
-    copy(table = table.updated(x, table(x).updated(y, v)), used = used, free = free, direction = Direction.Forward)
+    copy(table = table.updated2d(x, y, v), used = used, free = free, direction = Direction.Forward)
   }
 }
 

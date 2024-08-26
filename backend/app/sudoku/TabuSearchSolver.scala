@@ -3,39 +3,48 @@ package sudoku
 import sudoku.conversion.given
 
 import scala.collection.immutable.Queue
-import scala.util.boundary
-import scala.util.boundary.break
+import scala.util.{Try, boundary}
 
-val MaxTabuListSize = 9
+val MaxTabuListSize = 8
 val MaxIterationCount = 25000
+val TournamentSize = 3
 
-private[sudoku] case class TabuPartial(override val table: Vector[Vector[Cell]], fitness: Int) extends Partial(table) {
+private[sudoku] case class TabuPartial(override val table: Vector[Vector[Cell]], fitness: (Int, Int)) extends Partial(table) {
   override def reset: TabuPartial = {
     TabuPartial(super.reset.table)
   }
+  private def tournamentChoose[A](it: IterableOnce[A], tabu: Set[TabuPartial])(f: A => TabuPartial): Option[TabuPartial] = {
+    Try(
+      LazyList.from(it).map(f).filter(neigh => !tabu.contains(neigh)).take(TournamentSize).maxBy(_.fitness)
+    ).toOption
+  }
   def bestNeighbour(tabu: Set[TabuPartial], seed: Int): TabuPartial = boundary:
     val r = scala.util.Random(seed)
-    r.shuffle(settable).foreach((i, j, v) => {
-      val neigh = copy(table = table.updated(i, table(i).updated(j, Cell(v, false))), fitness = fitness + 1)
-      if (!tabu.contains(neigh)) {
-        break(neigh)
-      }
-    })
-    r.shuffle(deletable).foreach((i, j) => {
-      break(copy(table = table.updated(i, table(i).updated(j, Cell(0, false))), fitness = fitness - 1))
-    })
-    this
+    val chooseSet = tournamentChoose(r.shuffle(settable), tabu)((i, j, v) =>
+      TabuPartial(table.updated2d(i, j, Cell(v, false)))
+    )
+    chooseSet match {
+      case Some(v) => return v
+      case None =>
+        val chooseDel = tournamentChoose(r.shuffle(deletable), tabu)((i, j) =>
+          TabuPartial(table.updated2d(i, j, Cell(0, false)))
+        )
+        chooseDel match {
+          case Some(v) => return v
+          case None => this
+        }
+    }
   }
 
 private[sudoku] object TabuPartial {
   def apply(table: Vector[Vector[Cell]]): TabuPartial = {
-    TabuPartial(table, table.map(_.count(_.value != 0)).sum)
+    TabuPartial(table, fitness(table))
   }
 }
 
 private case class TabuSearchState(q: Queue[TabuPartial], vis: Set[TabuPartial], seed: Int, it: Int) extends SolveState {
   override def isSolved: Boolean = {
-    best.fitness == 81
+    best.fitness._1 == 81
   }
   override def toSudokuTable: SudokuTable = {
     best.table.map(_.map(_.value))

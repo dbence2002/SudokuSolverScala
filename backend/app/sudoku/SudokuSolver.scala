@@ -57,6 +57,11 @@ trait SudokuSolver[State <: SolveState](using conv: Conversion[SudokuTable, Stat
   }
 }
 
+extension [A](t: Vector[Vector[A]])
+  def updated2d(i: Int, j: Int, v: A): Vector[Vector[A]] = {
+    t.updated(i, t(i).updated(j, v))
+  }
+
 object Augmenter {
   private val allNums = Set.range(1, 10)
 
@@ -89,14 +94,14 @@ object Augmenter {
         break(None)
       }
       if (free.size == 1) {
-        break(augment(t.updated(i, t(i).updated(j, free.head))))
+        break(augment(t.updated2d(i, j, free.head)))
       }
     }
     val update = (i: Int, j: Int, v: Int) => {
       if (t(i)(j) != 0) {
         break(None)
       }
-      break(augment(t.updated(i, t(i).updated(j, v))))
+      break(augment(t.updated2d(i, j, v)))
     }
     Range(1, 10).foreach(v => {
       Range(0, 9).foreach(i => {

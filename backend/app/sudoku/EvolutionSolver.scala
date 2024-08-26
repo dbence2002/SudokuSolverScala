@@ -4,8 +4,8 @@ import sudoku.conversion.given
 import scala.collection.mutable.Set as MSet
 import scala.collection.mutable.Map as MMap
 
-val PopulationSize = 10
-val ActionTournamentCount = 4
+val PopulationSize = 15
+val ActionTournamentCount = 5
 val CrossoverTournamentCount = 1
 val MaxGenerationCount = 2500
 
@@ -107,8 +107,8 @@ private[sudoku] case class EvolutionPartial(override val table: Vector[Vector[Ce
       case Right(v) => (v._2, 1)
     })
     best match {
-      case Left((x, y)) => EvolutionPartial(table.updated(x, table(x).updated(y, Cell(0, false))))
-      case Right((x, y, z)) => EvolutionPartial(table.updated(x, table(x).updated(y, Cell(z, false))))
+      case Left((x, y)) => EvolutionPartial(table.updated2d(x, y, Cell(0, false)))
+      case Right((x, y, z)) => EvolutionPartial(table.updated2d(x, y, Cell(z, false)))
     }
   }
 }
@@ -121,7 +121,8 @@ private[sudoku] object EvolutionPartial {
 
 private[sudoku] def fitness(table: Vector[Vector[Cell]]): (Int, Int) = {
   def sqSum(arr: Vector[Cell]): Int = {
-    arr.count(_.value != 0)
+    val cnt = arr.count(_.value != 0)
+    cnt * cnt
   }
   def sumInRows(mat: Vector[Vector[Cell]], f: Vector[Cell] => Int): Int = {
     mat.map(row => f(row)).sum
@@ -152,7 +153,6 @@ private case class EvolutionState(pop: Vector[EvolutionPartial], seed: Int, gen:
 
 object EvolutionSolver extends SudokuSolver[EvolutionState] {
   override def apply(st: EvolutionState): Option[EvolutionState] = {
-    println(st.best.fitness)
     if (st.isSolved) {
       return Some(st)
     }

@@ -6,7 +6,7 @@ import scala.collection.immutable.Queue
 import scala.util.boundary
 import scala.util.boundary.break
 
-val MaxTabuListSize = 10
+val MaxTabuListSize = 9
 val MaxIterationCount = 25000
 
 private[sudoku] case class TabuPartial(override val table: Vector[Vector[Cell]], fitness: Int) extends Partial(table) {
